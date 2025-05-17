@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanical Engineering Study Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #e0e7ff;
+      --secondary: #14b8a6;
+      --background: #f8fafc;
+      --card-bg: #fff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --shadow: 0 4px 24px rgba(37,99,235,0.07);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--background);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .header {
+      text-align: center;
+      padding: 2rem 1rem 1rem 1rem;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--primary);
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0 1rem 0;
+    }
+    .tab-btn {
+      background: var(--card-bg);
+      border: 2px solid var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0.7rem 2rem;
+      border-radius: var(--radius) var(--radius) 0 0;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-bottom: 2px solid var(--primary);
+      z-index: 2;
+    }
+    .unit-filter {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .unit-btn {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      border-radius: 20px;
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .unit-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .search-container {
+      max-width: 500px;
+      margin: 0 auto 2rem auto;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 2.5rem;
+      border: 2px solid var(--primary-light);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      background: #fff;
+      color: var(--text);
+      transition: border 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      padding: 0 1rem;
+    }
+    .video-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.5s forwards;
+    }
+    .video-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(37,99,235,0.13);
+    }
+    .video-thumb {
+      background: var(--primary-light);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .play-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(37,99,235,0.08);
+      transition: background 0.2s;
+    }
+    .video-card:hover .play-overlay {
+      background: rgba(37,99,235,0.18);
+    }
+    .play-btn {
+      background: #fff;
+      color: var(--primary);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+      transition: background 0.2s, color 0.2s;
+    }
+    .video-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1rem 1rem 0.5rem 1rem;
+      color: var(--text);
+      min-height: 48px;
+    }
+    .video-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0 1rem 1rem 1rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(30,41,59,0.85);
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: #fff;
+      border-radius: var(--radius);
+      max-width: 700px;
+      width: 95vw;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      animation: fadeInUp 0.4s;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--primary);
+      color: #fff;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-video {
+      width: 100%;
+      height: 400px;
+      border: none;
+      display: block;
+      background: #000;
+    }
+    @media (max-width: 600px) {
+      .video-grid { grid-template-columns: 1fr; }
+      .modal-video { height: 220px; }
+    }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Mechanical Engineering Study Portal</h1>
+    <p>RAC = Refrigeration and Air Conditioning &nbsp; | &nbsp; TOM = Theory of Machine</p>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-subject="rac"><i class="fas fa-snowflake"></i> RAC</button>
+    <button class="tab-btn" data-subject="tom"><i class="fas fa-cogs"></i> TOM</button>
+  </div>
+  <div class="unit-filter" id="unitFilter">
+    <!-- Unit buttons will be injected here -->
+  </div>
+  <div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search for videos...">
+  </div>
+  <div class="video-grid" id="videoGrid">
+    <!-- Video cards will be injected here -->
+  </div>
+  <div class="modal" id="videoModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modalTitle"></span>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <iframe class="modal-video" id="modalVideo" allowfullscreen></iframe>
+    </div>
+  </div>
+  <script>
+    // Video data
+    const videos = [
+      // RAC Unit 1
+      { subject: 'rac', unit: '1', title: 'RAC = 1.1 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/xb0nolvoC', duration: '30 min', views: '1.2k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.2 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/uZFaGr4o5', duration: '28 min', views: '1.1k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.3 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/aeHnyfZF9', duration: '32 min', views: '1.0k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.4 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/eNpHx8X-X', duration: '35 min', views: '1.3k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.5 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/LzWzZHuo_', duration: '33 min', views: '1.2k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.6 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/8TmpKglUC', duration: '29 min', views: '1.1k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.7 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/cWulBdcNK', duration: '31 min', views: '1.0k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.8 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/iFVb7v4kk', duration: '34 min', views: '1.2k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.9 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/37t24NtFD', duration: '32 min', views: '1.1k' },
+      { subject: 'rac', unit: '1', title: 'RAC = 1.10 (Refrigeration and Air Conditioning 1 Unit 1 Lecture)', src: 'https://short.icu/qfcaCZz5z', duration: '30 min', views: '1.0k' },
+      // TOM Unit 1
+      { subject: 'tom', unit: '1', title: 'TOM = 1.1 (Theory of Machines 1 Unit 1 Lecture)', src: 'https://short.icu/kTWIbfFig', duration: '28 min', views: '1.2k' },
+      { subject: 'tom', unit: '1', title: 'TOM = 1.2 (Theory of Machines 1 Unit 1 Lecture)', src: 'https://short.icu/6NB2A9vBA', duration: '30 min', views: '1.1k' },
+      // RAC Unit 2
+      { subject: 'rac', unit: '2', title: 'RAC = 2.1 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/BXN21BHQe', duration: '32 min', views: '1.2k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.2 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/TmsuImMTY', duration: '28 min', views: '1.1k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.3 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/EKoH4Ufvx', duration: '30 min', views: '1.0k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.4 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/bmDuUXA-0', duration: '31 min', views: '1.1k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.5 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/SJUDFKl1m', duration: '27 min', views: '1.0k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.6 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/1E0ZYBYRT', duration: '35 min', views: '1.3k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.7 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/c_70RicGW', duration: '29 min', views: '1.0k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.8 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/4uMOl8Rpa', duration: '33 min', views: '1.2k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.9 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/Lmy5Xhu4Ez', duration: '26 min', views: '1.1k' },
+      { subject: 'rac', unit: '2', title: 'RAC = 2.10 (Refrigeration and Air Conditioning 1 Unit 2 Lecture)', src: 'https://short.icu/qKRHzoAGB', duration: '34 min', views: '1.2k' },
+      // RAC Unit 3
+      { subject: 'rac', unit: '3', title: 'RAC = 3.1 (Refrigeration and Air Conditioning 1 Unit 3 Lecture)', src: 'https://short.icu/9akwFwx2i', duration: '36 min', views: '1.1k' },
+      { subject: 'rac', unit: '3', title: 'RAC = 3.2 (Refrigeration and Air Conditioning 1 Unit 3 Lecture)', src: 'https://short.icu/19a0qeCdl', duration: '38 min', views: '1.3k' },
+      { subject: 'rac', unit: '3', title: 'RAC = 3.3 (Refrigeration and Air Conditioning 1 Unit 3 Lecture)', src: 'https://short.icu/qbTGMcC1X', duration: '32 min', views: '1.0k' },
+      { subject: 'rac', unit: '3', title: 'RAC = 3.4 (Refrigeration and Air Conditioning 1 Unit 3 Lecture)', src: 'https://short.icu/LLzSG1S1L', duration: '29 min', views: '1.1k' },
+      { subject: 'rac', unit: '3', title: 'RAC = 3.5 (Refrigeration and Air Conditioning 1 Unit 3 Lecture)', src: 'https://short.icu/rJ09kTnAW', duration: '37 min', views: '1.2k' },
+      // RAC Unit 4
+      { subject: 'rac', unit: '4', title: 'RAC = 4.1 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/EhoYb1MUS', duration: '38 min', views: '1.0k' },
+      { subject: 'rac', unit: '4', title: 'RAC = 4.2 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/jQH7AdxZE', duration: '40 min', views: '1.4k' },
+      { subject: 'rac', unit: '4', title: 'RAC = 4.3 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/8Wxt8Q871', duration: '40 min', views: '1.4k' },
+      { subject: 'rac', unit: '4', title: 'RAC = 4.4 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/AGF875dfK', duration: '42 min', views: '1.3k' },
+      { subject: 'rac', unit: '4', title: 'RAC = 4.5 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/42y3OynMD', duration: '39 min', views: '1.2k' },
+      { subject: 'rac', unit: '4', title: 'RAC = 4.6 (Refrigeration and Air Conditioning 1 Unit 4 Lecture)', src: 'https://short.icu/ouOytWfeK', duration: '41 min', views: '1.1k' },
+      // TOM Unit 3
+      { subject: 'tom', unit: '3', title: 'TOM = 3.1 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/A70VEkW8c', duration: '28 min', views: '1.2k' },
+      { subject: 'tom', unit: '3', title: 'TOM = 3.2 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/stFe42c7v', duration: '30 min', views: '1.1k' },
+      { subject: 'tom', unit: '3', title: 'TOM = 3.3 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/BHDBMzdc8', duration: '32 min', views: '1.0k' },
+      { subject: 'tom', unit: '3', title: 'TOM = 3.4 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/8I7SCde59', duration: '35 min', views: '1.3k' },
+      { subject: 'tom', unit: '3', title: 'TOM = 3.5 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/Zm9HVpsG2', duration: '33 min', views: '1.1k' },
+      { subject: 'tom', unit: '3', title: 'TOM = 3.6 (Theory of Machines 1 Unit 3 Lecture)', src: 'https://short.icu/x19SMil8X', duration: '31 min', views: '1.0k' },
+      // TOM Unit 4
+      { subject: 'tom', unit: '4', title: 'TOM = 4.1 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/XaDNHynIf', duration: '28 min', views: '1.2k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.2 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/jLEukvjWl', duration: '30 min', views: '1.1k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.3 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/YTUL1xsHg', duration: '32 min', views: '1.0k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.4 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/jNrYRW-NQ', duration: '35 min', views: '1.3k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.5 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/JbzhRBSnR', duration: '33 min', views: '1.1k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.6 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/_1A7FzsKG', duration: '31 min', views: '1.0k' },
+      { subject: 'tom', unit: '4', title: 'TOM = 4.7 (Theory of Machines 1 Unit 4 Lecture)', src: 'https://short.icu/-_Brkic94', duration: '34 min', views: '1.2k' },
+    ];
+    const units = {
+      rac: [
+        { unit: '1', label: 'Unit 1: Introduction' },
+        { unit: '2', label: 'Unit 2: Refrigeration' },
+        { unit: '3', label: 'Unit 3: Air Conditioning' },
+        { unit: '4', label: 'Unit 4: Applications' },
+      ],
+      tom: [
+        { unit: '1', label: 'Unit 1: Introduction' },
+        { unit: '3', label: 'Unit 3: Advanced Concepts' },
+        { unit: '4', label: 'Unit 4: Balancing' },
+      ]
+    };
+    // State
+    let currentSubject = 'rac';
+    let currentUnit = 'all';
+    // DOM
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const unitFilter = document.getElementById('unitFilter');
+    const videoGrid = document.getElementById('videoGrid');
+    const searchInput = document.getElementById('searchInput');
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.getElementById('closeModal');
+    // Render unit buttons
+    function renderUnitButtons() {
+      unitFilter.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'unit-btn' + (currentUnit === 'all' ? ' active' : '');
+      allBtn.textContent = 'All Units';
+      allBtn.onclick = () => { currentUnit = 'all'; renderUnitButtons(); renderVideos(); };
+      unitFilter.appendChild(allBtn);
+      units[currentSubject].forEach(u => {
+        const btn = document.createElement('button');
+        btn.className = 'unit-btn' + (currentUnit === u.unit ? ' active' : '');
+        btn.textContent = u.label;
+        btn.onclick = () => { currentUnit = u.unit; renderUnitButtons(); renderVideos(); };
+        unitFilter.appendChild(btn);
+      });
+    }
+    // Render videos
+    function renderVideos() {
+      videoGrid.innerHTML = '';
+      let filtered = videos.filter(v => v.subject === currentSubject);
+      if (currentUnit !== 'all') filtered = filtered.filter(v => v.unit === currentUnit);
+      const search = searchInput.value.trim().toLowerCase();
+      if (search) filtered = filtered.filter(v => v.title.toLowerCase().includes(search));
+      filtered.forEach((v, i) => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.style.animationDelay = (i * 0.07) + 's';
+        card.innerHTML = `
+          <div class="video-thumb">
+            <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+          </div>
+          <div class="video-title">${v.title}</div>
+          <div class="video-meta">
+            <span><i class="fas fa-clock"></i> ${v.duration}</span>
+            <span><i class="fas fa-eye"></i> ${v.views} views</span>
+          </div>
+        `;
+        card.onclick = () => openModal(v.title, v.src);
+        videoGrid.appendChild(card);
+      });
+      if (filtered.length === 0) {
+        videoGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:1.2rem;padding:2rem;">No videos found.</div>';
+      }
+    }
+    // Modal
+    function openModal(title, src) {
+      modalTitle.textContent = title;
+      modalVideo.src = src;
+      videoModal.classList.add('active');
+    }
+    function closeModalFn() {
+      videoModal.classList.remove('active');
+      modalVideo.src = '';
+    }
+    closeModal.onclick = closeModalFn;
+    videoModal.onclick = e => { if (e.target === videoModal) closeModalFn(); };
+    // Tab switching
+    tabBtns.forEach(btn => {
+      btn.onclick = () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSubject = btn.dataset.subject;
+        currentUnit = 'all';
+        renderUnitButtons();
+        renderVideos();
+      };
+    });
+    // Search
+    searchInput.oninput = renderVideos;
+    // Initial render
+    renderUnitButtons();
+    renderVideos();
+  </script>
+</body>
+</html>

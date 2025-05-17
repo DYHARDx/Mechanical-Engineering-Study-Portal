@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanical Engineering Study Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #e0e7ff;
+      --secondary: #14b8a6;
+      --background: #f8fafc;
+      --card-bg: #fff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --shadow: 0 4px 24px rgba(37,99,235,0.07);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--background);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+    }
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+      color: white;
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .features {
+      padding: 4rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .feature-card p {
+      color: var(--muted);
+    }
+    .subjects {
+      background: var(--primary-light);
+      padding: 4rem 1rem;
+    }
+    .subjects h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .subject-card {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .subject-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    .subject-card ul {
+      list-style: none;
+    }
+    .subject-card li {
+      margin-bottom: 0.5rem;
+      color: var(--muted);
+    }
+    .subject-card li i {
+      color: var(--primary);
+      margin-right: 0.5rem;
+    }
+    .footer {
+      background: var(--text);
+      color: white;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    .footer p {
+      opacity: 0.8;
+    }
+    .contact {
+      padding: 4rem 1rem;
+      background: white;
+    }
+    .contact h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .contact-card {
+      background: var(--primary-light);
+      padding: 2rem;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .contact-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .contact-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .contact-card p {
+      color: var(--muted);
+    }
+    .contact-card a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-card a:hover {
+      text-decoration: underline;
+    }
+    .developer {
+      background: var(--text);
+      color: white;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    .developer h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .developer p {
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+    .developer a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+    .developer a:hover {
+      text-decoration: underline;
+    }
+    .stats {
+      padding: 4rem 1rem;
+      background: var(--primary-light);
+    }
+    .stats h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .stat-card {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1.1rem; }
+      .feature-grid, .subject-grid, .contact-grid, .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Mechanical Engineering Study Portal</h1>
+    <p>Your comprehensive resource for learning Refrigeration & Air Conditioning (RAC) and Theory of Machines (TOM)</p>
+    <a href="index2.html" class="cta-button">Start Learning Now</a>
+  </div>
+
+  <div class="features">
+    <h2>Why Choose Our Portal?</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-video"></i>
+        </div>
+        <h3>High-Quality Video Lectures</h3>
+        <p>Access comprehensive video lectures covering all important topics in RAC and TOM</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <h3>Structured Learning</h3>
+        <p>Well-organized content divided into units for systematic learning</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>Easy Navigation</h3>
+        <p>Quick search and filter options to find exactly what you need</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <h2>Portal Statistics</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">46+</div>
+        <div class="stat-label">Video Lectures</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">7+</div>
+        <div class="stat-label">Course Units</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2</div>
+        <div class="stat-label">Core Subjects</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Access Available</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subjects">
+    <h2>What You'll Learn</h2>
+    <div class="subject-grid">
+      <div class="subject-card">
+        <h3>Refrigeration & Air Conditioning (RAC)</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Introduction to RAC Systems</li>
+          <li><i class="fas fa-check"></i> Refrigeration Cycles</li>
+          <li><i class="fas fa-check"></i> Air Conditioning Principles</li>
+          <li><i class="fas fa-check"></i> Practical Applications</li>
+          <li><i class="fas fa-check"></i> System Components</li>
+        </ul>
+      </div>
+      <div class="subject-card">
+        <h3>Theory of Machines (TOM)</h3>
+        <ul>
+          <li><i class="fas fa-check"></i> Basic Concepts</li>
+          <li><i class="fas fa-check"></i> Advanced Mechanisms</li>
+          <li><i class="fas fa-check"></i> Balancing of Rotating Masses</li>
+          <li><i class="fas fa-check"></i> Gear Systems</li>
+          <li><i class="fas fa-check"></i> Machine Dynamics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact">
+    <h2>Get in Touch</h2>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h3>Email Us</h3>
+        <p>Have questions? We're here to help!</p>
+        <a href="mailto:dyhardeveloper@gmail.com">dyhardeveloper@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3>Feedback</h3>
+        <p>Your feedback helps us improve</p>
+        <a href="mailto:dyhardeveloper@gmail.com">Send Feedback</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <i class="fas fa-question-circle"></i>
+        </div>
+        <h3>Support</h3>
+        <p>Need technical assistance?</p>
+        <a href="mailto:dyhardeveloper@gmail.com">Contact Support</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="developer">
+    <h2>Developer Information</h2>
+    <p>Developed by <strong>Aman Singh</strong></p>
+    <p>Email: <a href="mailto:dyhardeveloper@gmail.com">dyhardeveloper@gmail.com</a></p>
+    <p>© 2024 Mechanical Engineering Study Portal. All rights reserved.</p>
+  </div>
+</body>
+</html>
