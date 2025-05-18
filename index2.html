@@ -1,572 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Educational Video Player</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #7C3AED; /* Vibrant Purple */
-      --primary-light: #EDE9FE; /* Light Purple */
-      --secondary-color: #F5F3FF; /* Very Light Purple */
-      --text-color-dark: #1F2937; /* Dark Grey */
-      --text-color-light: #fff; /* White */
-      --background-color-light: #F9FAFB; /* Light Grey */
-      --background-color-dark: #fff; /* White for container */
-      --border-color: #E5E7EB; /* Light Grey */
-      --star-color: #F59E0B; /* Amber */
-      --icon-color-dark: #4B5563; /* Medium Grey */
-      --icon-color-light: #10B981; /* Green */
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course View</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background-color: var(--background-color-light);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 20px;
-      color: var(--text-color-dark);
-    }
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50c878;
+            --accent-color: #f39c12;
+            --background-color: #f5f7fa;
+            --text-color: #2c3e50;
+            --border-color: #e1e8ed;
+        }
 
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      background-color: var(--background-color-dark);
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            background: var(--background-color);
+            font-size: 16px;
+            color: var(--text-color);
+        }
 
-    .content {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      padding: 24px;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    .video-container {
-      width: 100%;
-      position: relative;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      border-radius: 12px;
-      aspect-ratio: 16/9; /* Maintain 16:9 aspect ratio */
-      box-shadow: var(--shadow-md);
-    }
+        .video-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-    .video-thumbnail iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      border-radius: 12px;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+        .course-info {
+            margin-bottom: 15px;
+        }
 
-    .video-thumbnail img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-      border-radius: 12px;
-    }
+        .course-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            color: var(--primary-color);
+        }
 
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: rgba(124, 58, 237, 0.9);
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      z-index: 10;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-    }
+        .course-stats {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            flex-wrap: wrap;
+        }
 
-    .play-button:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-      background-color: rgba(124, 58, 237, 1);
-      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
-    }
+        .course-stats span {
+            background: var(--background-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
 
-    .play-button svg {
-      fill: var(--text-color-light);
-      width: 40px;
-      height: 40px;
-    }
+        .video-container {
+            width: 100%;
+            height: 500px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-    .playlist-container {
-      width: 100%;
-      background: var(--background-color-dark);
-      padding: 0;
-      border-radius: 12px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
-    .course-details {
-      padding: 0 20px 24px 20px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 24px;
-    }
+        .content-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-    .course-details h2 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 1.75em;
-      color: var(--text-color-dark);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-    }
+        .lesson-list {
+            margin-top: 15px;
+        }
 
-    .course-details .creator {
-      color: var(--icon-color-dark);
-      font-size: 1.1em;
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
+        .unit {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-    .info-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      color: var(--icon-color-dark);
-      font-size: 0.95em;
-    }
+        .unit-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            cursor: pointer;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
 
-    .info-row span {
-      margin-right: 24px;
-      display: flex;
-      align-items: center;
-      font-weight: 500;
-    }
+        .unit-title:hover {
+            background: #357abd;
+        }
 
-    .info-row i {
-      margin-right: 8px;
-      color: var(--star-color);
-    }
+        .unit-title::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
 
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 0;
-    }
+        .unit.collapsed .unit-title::after {
+            transform: rotate(-90deg);
+        }
 
-    .action-button {
-      flex: 1;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1.1em;
-      font-weight: 600;
-      text-align: center;
-      transition: all 0.2s ease;
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-    }
+        .lessons {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease;
+        }
 
-    .action-button.active {
-      background-color: var(--primary-color);
-      color: var(--text-color-light);
-      box-shadow: var(--shadow-sm);
-    }
+        .unit:not(.collapsed) .lessons {
+            max-height: 2000px;
+            padding: 10px;
+        }
 
-    .action-button:hover:not(.active) {
-      background-color: var(--secondary-color);
-      transform: translateY(-1px);
-    }
+        .lesson {
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+        }
 
-    .unit-title {
-      font-size: 1.15em;
-      font-weight: 600;
-      color: var(--text-color-dark);
-      margin-bottom: 0;
-      cursor: pointer;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.2s ease;
-      background-color: var(--background-color-dark);
-    }
+        .lesson:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
 
-    .unit-title:hover {
-      background-color: var(--primary-light);
-      color: var(--primary-color);
-    }
+        .lesson.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
 
-    .unit-title i {
-      transition: transform 0.3s ease;
-      color: var(--icon-color-dark);
-    }
+        .lesson-number {
+            background: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            min-width: 24px;
+            text-align: center;
+        }
 
-    .unit-title.expanded i {
-      transform: rotate(180deg);
-      color: var(--primary-color);
-    }
+        .lesson.active .lesson-number {
+            background: white;
+            color: var(--primary-color);
+        }
 
-    .video-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      background-color: var(--secondary-color);
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-      opacity: 0;
-      visibility: hidden;
-    }
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(74, 144, 226, 0.9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
 
-    .video-list:not(.hidden) {
-      max-height: 1000px;
-      transition: max-height 0.5s ease-in, opacity 0.3s ease-in, visibility 0.3s ease-in;
-      opacity: 1;
-      visibility: visible;
-    }
+        .play-button:hover {
+            background: rgba(74, 144, 226, 1);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
 
-    .hidden {
-      display: none !important;
-    }
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
 
-    .video-item {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid rgba(124, 58, 237, 0.1);
-    }
+        /* Mobile-specific styles */
+        @media (max-width: 767px) {
+            body {
+                padding: 5px;
+            }
 
-    .video-item:hover {
-      background-color: var(--primary-light);
-    }
+            .container {
+                gap: 10px;
+            }
 
-    .video-item .lesson-play-icon {
-      color: var(--primary-color);
-      margin-right: 16px;
-      font-size: 1.3em;
-      transition: transform 0.2s ease;
-    }
+            .course-title {
+                font-size: 1.4rem;
+            }
 
-    .video-item:hover .lesson-play-icon {
-      transform: scale(1.1);
-    }
+            .lesson {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
 
-    .video-item .lesson-details {
-      flex-grow: 1;
-      overflow: hidden;
-    }
+            .play-button {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
 
-    .video-item .lesson-details .title {
-      font-size: 1.05em;
-      color: var(--text-color-dark);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 500;
-    }
+            .unit-title {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
 
-    .video-item .lesson-details .duration {
-      font-size: 0.9em;
-      color: var(--icon-color-dark);
-      margin-top: 4px;
-    }
+            .video-container {
+                height: 300px;
+            }
+        }
 
-    .video-item .lesson-status-icon i {
-      color: var(--icon-color-light);
-      margin-left: 16px;
-      font-size: 1.2em;
-      transition: transform 0.2s ease;
-    }
+        /* Touch-friendly styles */
+        @media (hover: none) {
+            .lesson {
+                padding: 15px;
+                margin: 8px 0;
+            }
 
-    .video-item:hover .lesson-status-icon i {
-      transform: scale(1.1);
-    }
+            .play-button {
+                padding: 15px 30px;
+            }
 
-    @media (min-width: 768px) {
-      .container {
-        flex-direction: row;
-        padding: 0;
-      }
-
-      .content {
-        flex-direction: row;
-        padding: 0;
-      }
-
-      .video-container {
-        flex: 2;
-        border-radius: 0;
-        border-top-left-radius: 16px;
-        border-bottom-left-radius: 16px;
-      }
-
-      .video-thumbnail iframe {
-        height: 100%;
-      }
-
-      .playlist-container {
-        flex: 1;
-        padding: 24px;
-        max-height: none;
-        border-top-right-radius: 16px;
-        border-bottom-right-radius: 16px;
-      }
-
-      .course-details {
-        padding: 0 0 24px 0;
-      }
-
-      .unit-title {
-        padding: 16px 0;
-      }
-
-      .video-item {
-        padding: 16px 0;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .video-container {
-        min-height: 0; /* Remove fixed height */
-      }
-    }
-
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+            .unit-title {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="video-container">
-        <!-- Placeholder for video iframe - will be updated by JS -->
-      <iframe id="videoPlayer" src="" allowfullscreen></iframe>
-      <img id="videoThumbnail" src="https://via.placeholder.com/640x360.png?text=Video+Thumbnail" alt="Video Thumbnail Placeholder">
-      <div class="play-button">
-         <svg viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z"/>
-        </svg>
-      </div>
+    <div class="container">
+        <div class="video-section">
+            <div class="course-info">
+                <h1 class="course-title">Developer: Aman Singh</h1>
+                <div class="course-stats">
+                    <span>Views: 2.3k</span>
+                    <span>Share: 1.3k</span>
+                </div>
+            </div>
+            
+            <div class="video-container">
+                <img src="https://images.unsplash.com/photo-1581090700227-1e8f4c3d1d4f?auto=format&fit=crop&w=1200&q=80" alt="Video Thumbnail" class="thumbnail">
+                <button class="play-button">Play</button>
+                <iframe style="display: none;" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Course Content</h2>
+            <div class="lesson-list">
+                <!-- TOM U1 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">TOM U1 (Theory of Machines - Unit 1)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/6NB2A9vBA">
+                            <span class="lesson-number">1</span>
+                            TOM u1 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/aeHnyfZF9">
+                            <span class="lesson-number">2</span>
+                            TOM u1 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/LzWzZHuo_">
+                            <span class="lesson-number">3</span>
+                            TOM u1 4 part 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/lrzbnhCg9">
+                            <span class="lesson-number">4</span>
+                            TOM u1 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/cWulBdcNK">
+                            <span class="lesson-number">5</span>
+                            TOM u1 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/37t24NtFD">
+                            <span class="lesson-number">6</span>
+                            TOM u1 7.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/qfcaCZz5z">
+                            <span class="lesson-number">7</span>
+                            TOM u1 8.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOM U2 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">TOM U2 (Theory of Machines - Unit 2)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/BXN21BHQe">
+                            <span class="lesson-number">1</span>
+                            TOM u2 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/1nXiRb7LM">
+                            <span class="lesson-number">2</span>
+                            TOM u2 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/TjL7dLwy6">
+                            <span class="lesson-number">3</span>
+                            TOM u2 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/SJUDFKl1m">
+                            <span class="lesson-number">4</span>
+                            TOM u2 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/k-i2Ekp4L">
+                            <span class="lesson-number">5</span>
+                            TOM u2 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/4_BfWkzLq">
+                            <span class="lesson-number">6</span>
+                            TOM u2 6.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/LpKd3LtRV">
+                            <span class="lesson-number">7</span>
+                            TOM u24.mp4 (U2 L4)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOM U3 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">TOM U3 (Theory of Machines - Unit 3)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/A70VEkW8c">
+                            <span class="lesson-number">1</span>
+                            TOM u3 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/stFe42c7v">
+                            <span class="lesson-number">2</span>
+                            TOM u3 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/BHDBMzdc8">
+                            <span class="lesson-number">3</span>
+                            TOM u3 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/8I7SCde59">
+                            <span class="lesson-number">4</span>
+                            TOM u3 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/Zm9HVpsG2">
+                            <span class="lesson-number">5</span>
+                            TOM u3 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/x19SMil8X">
+                            <span class="lesson-number">6</span>
+                            TOM u3 6.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TOM U4 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">TOM U4 (Theory of Machines - Unit 4)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/XaDNHynIf">
+                            <span class="lesson-number">1</span>
+                            TOM U4 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/jLEukvjWl">
+                            <span class="lesson-number">2</span>
+                            TOM U4 1 balancing.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/YTUL1xsHg">
+                            <span class="lesson-number">3</span>
+                            TOM U4 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/JbzhRBSnR">
+                            <span class="lesson-number">4</span>
+                            TOM U4 2 balancing.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/_1A7FzsKG">
+                            <span class="lesson-number">5</span>
+                            TOM U4 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/jNrYRW-NQ">
+                            <span class="lesson-number">6</span>
+                            TOM U4 3 balancing.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/-_Brkic94">
+                            <span class="lesson-number">7</span>
+                            TOM U4 4.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAC U1 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">RAC U1 (Refrigeration and Air Conditioning - Unit 1)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/xb0nolvoC">
+                            <span class="lesson-number">1</span>
+                            RAC u1 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/uZFaGr4o5">
+                            <span class="lesson-number">2</span>
+                            RAC U1 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/JZ_ZK1nUB">
+                            <span class="lesson-number">3</span>
+                            RAC u1 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/eNpHx8X-X">
+                            <span class="lesson-number">4</span>
+                            RAC u1 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/8TmpKglUC">
+                            <span class="lesson-number">5</span>
+                            RAC u1 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/iFVb7v4kk">
+                            <span class="lesson-number">6</span>
+                            RAC u1 6.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/4QYud21Hp">
+                            <span class="lesson-number">7</span>
+                            RAC u1 7.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/mAl1lcRby">
+                            <span class="lesson-number">8</span>
+                            RAC u1 8.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/X2YfXhaMS">
+                            <span class="lesson-number">9</span>
+                            RAC u1 9.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/Qf9HoVnbt">
+                            <span class="lesson-number">10</span>
+                            RAC u1 10.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAC U2 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">RAC U2 (Refrigeration and Air Conditioning - Unit 2)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/ls1kTyO_3">
+                            <span class="lesson-number">1</span>
+                            RAC u2 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/TmsuImMTY">
+                            <span class="lesson-number">2</span>
+                            RAC u2 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/EKoH4Ufvx">
+                            <span class="lesson-number">3</span>
+                            RAC u2 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/bmDuUXA-0">
+                            <span class="lesson-number">4</span>
+                            RAC u2 3_1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/SJUDFKl1m">
+                            <span class="lesson-number">5</span>
+                            RAC u2 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/1E0ZYBYRT">
+                            <span class="lesson-number">6</span>
+                            RAC u2 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/qKRHzoAGB">
+                            <span class="lesson-number">7</span>
+                            RAC u2 5_1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/c_70RicGW">
+                            <span class="lesson-number">8</span>
+                            RAC u2 6.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/4uMOl8Rpa">
+                            <span class="lesson-number">9</span>
+                            RAC u2 7.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/Lmy5Xhu4Ez">
+                            <span class="lesson-number">10</span>
+                            RAC u2 8.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAC U3 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">RAC U3 (Refrigeration and Air Conditioning - Unit 3)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/9akwFwx2i">
+                            <span class="lesson-number">1</span>
+                            RAC U3 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/19a0qeCdl">
+                            <span class="lesson-number">2</span>
+                            RAC U3 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/qbTGMcC1X">
+                            <span class="lesson-number">3</span>
+                            RAC U3 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/LLzSG1S1L">
+                            <span class="lesson-number">4</span>
+                            RAC U3 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/rJ09kTnAW">
+                            <span class="lesson-number">5</span>
+                            RAC U3 6.mp4
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAC U4 Section -->
+                <div class="unit collapsed">
+                    <div class="unit-title">RAC U4 (Refrigeration and Air Conditioning - Unit 4)</div>
+                    <div class="lessons">
+                        <div class="lesson" data-video-url="https://short.icu/EhoYb1MUS">
+                            <span class="lesson-number">1</span>
+                            RAC U4 1.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/jQH7AdxZE">
+                            <span class="lesson-number">2</span>
+                            RAC U4 2.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/8Wxt8Q871">
+                            <span class="lesson-number">3</span>
+                            RAC U4 3.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/AGF875dfK">
+                            <span class="lesson-number">4</span>
+                            RAC U4 4.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/42y3OynMD">
+                            <span class="lesson-number">5</span>
+                            RAC U4 5.mp4
+                        </div>
+                        <div class="lesson" data-video-url="https://short.icu/ouOytWfeK">
+                            <span class="lesson-number">6</span>
+                            RAC U4 6.mp4
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="playlist-container">
-      <div class="course-details">
-        <h2>Flutter Novice to Ninja</h2>
-        <div class="creator">Created by DevWheels</div>
-        <div class="info-row">
-          <span><i class="fas fa-star"></i> 5.0</span>
-          <span class="hours"><i class="far fa-clock"></i> ~7 Hours</span>
-          <span><i class="fas fa-eye"></i> Many</span>
-        </div>
-        <div class="action-buttons">
-          <button class="action-button rac active">RAC</button>
-          <button class="action-button tom">TOM</button>
-        </div>
-      </div>
+    <script>
+        // Video playback functionality
+        const videoContainer = document.querySelector('.video-container');
+        const thumbnail = document.querySelector('.thumbnail');
+        const playButton = document.querySelector('.play-button');
+        const iframe = document.querySelector('iframe');
+        const courseTitle = document.querySelector('.course-title');
+        const courseStats = document.querySelector('.course-stats');
 
-      <div class="lessons-container">
-        <div id="tom-series" class="series-section hidden">
-          <div class="unit-section">
-            <div class="unit-title" onclick="toggleUnit('tom-u1')">TOM U1 (Unit 1) <i class="fas fa-chevron-down"></i></div>
-            <ul class="video-list hidden" id="tom-u1">
-              <li class="video-item" data-url="https://short.icu/6NB2A9vBA">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 2.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-check-circle"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/aeHnyfZF9">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 3.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/LzWzZHuo_">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 4 part 2.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/lrzbnhCg9">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 4.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/cWulBdcNK">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 5.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/37t24NtFD">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 7.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/qfcaCZz5z">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">TOM u1 8.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-            </ul>
-          </div>
+        function playVideo(url, title) {
+            thumbnail.style.display = 'none';
+            playButton.style.display = 'none';
+            iframe.src = url;
+            iframe.style.display = 'block';
+            
+            if (title) {
+                courseTitle.textContent = title;
+            }
+            
+            // Update stats
+            const randomViews = (Math.random() * 5 + 1).toFixed(1);
+            const randomShares = (Math.random() * 3 + 0.5).toFixed(1);
+            courseStats.innerHTML = `<span>Views: ${randomViews}k</span><span>Share: ${randomShares}k</span>`;
+        }
 
-          <div class="unit-section">
-            <div class="unit-title" onclick="toggleUnit('tom-u2')">TOM U2 (Unit 2) <i class="fas fa-chevron-down"></i></div>
-            <ul class="video-list hidden" id="tom-u2">
-              <li class="video-item" data-url="https://short.icu/BXN21BHQe">TOM u2 1.mp4</li>
-              <li class="video-item" data-url="https://short.icu/1nXiRb7LM">TOM u2 2.mp4</li>
-              <li class="video-item" data-url="https://short.icu/TjL7dLwy6">TOM u2 3.mp4</li>
-              <li class="video-item" data-url="https://short.icu/SJUDFKl1m">TOM u2 4.mp4</li>
-              <li class="video-item" data-url="https://short.icu/k-i2Ekp4L">TOM u2 5.mp4</li>
-              <li class="video-item" data-url="https://short.icu/4_BfWkzLq">TOM u2 6.mp4</li>
-              <li class="video-item" data-url="https://short.icu/LpKd3LtRV">TOM u24.mp4 (U2 L4)</li>
-            </ul>
-          </div>
+        // Add click handlers to lessons
+        document.querySelectorAll('.lesson').forEach(lesson => {
+            lesson.addEventListener('click', function() {
+                // Remove active class from all lessons
+                document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+                // Add active class to clicked lesson
+                this.classList.add('active');
+                
+                const videoUrl = this.getAttribute('data-video-url');
+                const videoTitle = this.textContent;
+                if (videoUrl) {
+                    playVideo(videoUrl, videoTitle);
+                    // Scroll video into view on mobile
+                    if (window.innerWidth < 768) {
+                        videoContainer.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
 
-           <div class="unit-section">
-            <div class="unit-title" onclick="toggleUnit('tom-u3')">TOM U3 (Unit 3) <i class="fas fa-chevron-down"></i></div>
-            <ul class="video-list hidden" id="tom-u3">
-              <li class="video-item" data-url="https://short.icu/A70VEkW8c">TOM u3 1.mp4</li>
-              <li class="video-item" data-url="https://short.icu/stFe42c7v">TOM u3 2.mp4</li>
-              <li class="video-item" data-url="https://short.icu/BHDBMzdc8">TOM u3 3.mp4</li>
-              <li class="video-item" data-url="https://short.icu/8I7SCde59">TOM u3 4.mp4</li>
-              <li class="video-item" data-url="https://short.icu/Zm9HVpsG2">TOM u3 5.mp4</li>
-              <li class="video-item" data-url="https://short.icu/x19SMil8X">TOM u3 6.mp4</li>
-            </ul>
-          </div>
+        // Play button click handler
+        playButton.addEventListener('click', function() {
+            const firstLesson = document.querySelector('.lesson');
+            if (firstLesson) {
+                firstLesson.classList.add('active');
+                const videoUrl = firstLesson.getAttribute('data-video-url');
+                const videoTitle = firstLesson.textContent;
+                if (videoUrl) {
+                    playVideo(videoUrl, videoTitle);
+                }
+            }
+        });
 
-          <div class="unit-section">
-            <div class="unit-title" onclick="toggleUnit('tom-u4')">TOM U4 (Unit 4) <i class="fas fa-chevron-down"></i></div>
-            <ul class="video-list hidden" id="tom-u4">
-              <li class="video-item" data-url="https://short.icu/XaDNHynIf">TOM U4 1.mp4</li>
-              <li class="video-item" data-url="https://short.icu/jLEukvjWl">TOM U4 1 balancing.mp4</li>
-              <li class="video-item" data-url="https://short.icu/YTUL1xsHg">TOM U4 2.mp4</li>
-              <li class="video-item" data-url="https://short.icu/JbzhRBSnR">TOM U4 2 balancing.mp4</li>
-              <li class="video-item" data-url="https://short.icu/_1A7FzsKG">TOM U4 3.mp4</li>
-              <li class="video-item" data-url="https://short.icu/jNrYRW-NQ">TOM U4 3 balancing.mp4</li>
-              <li class="video-item" data-url="https://short.icu/-_Brkic94">TOM U4 4.mp4</li>
-            </ul>
-          </div>
-        </div>
+        // Unit title click handlers with smooth animation
+        document.querySelectorAll('.unit-title').forEach(title => {
+            title.addEventListener('click', function() {
+                const unit = this.parentElement;
+                
+                // Close all other units
+                document.querySelectorAll('.unit').forEach(otherUnit => {
+                    if (otherUnit !== unit) {
+                        otherUnit.classList.add('collapsed');
+                    }
+                });
+                
+                // Toggle current unit
+                unit.classList.toggle('collapsed');
+            });
+        });
 
-        <div id="rac-series" class="series-section">
-           <div class="unit-section">
-            <div class="unit-title" onclick="toggleUnit('rac-u1')">RAC U1 <i class="fas fa-chevron-down"></i></div>
-            <ul class="video-list" id="rac-u1">
-              <li class="video-item" data-url="https://short.icu/xb0nolvoC">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 1.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-check-circle"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/uZFaGr4o5">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC U1 2.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-check-circle"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/JZ_ZK1nUB">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 3.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/eNpHx8X-X">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 4.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/8TmpKglUC">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 5.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/iFVb7v4kk">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 6.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/4QYud21Hp">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 7.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/mAl1lcRby">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 8.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/X2YfXhaMS">
-                <div class="lesson-play-icon"><i class="fas fa-play-circle"></i></div>
-                <div class="lesson-details">
-                  <div class="title">RAC u1 9.mp4</div>
-                  <div class="duration"></div>
-                </div>
-                <div class="lesson-status-icon"><i class="fas fa-lock"></i></div>
-              </li>
-              <li class="video-item" data-url="https://short.icu/Qf9HoVnbt">
-                <div class="lesson-play-icon">
+        // Initialize all units as collapsed
+        document.querySelectorAll('.unit').forEach(unit => {
+            unit.classList.add('collapsed');
+        });
+    </script>
+</body>
+</html>
+
+
