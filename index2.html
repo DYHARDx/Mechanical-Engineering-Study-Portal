@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course View</title>
+    <title>Premium Course Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -12,113 +13,382 @@
         }
 
         :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #50c878;
-            --accent-color: #f39c12;
-            --background-color: #f5f7fa;
-            --text-color: #2c3e50;
-            --border-color: #e1e8ed;
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary-color: #0ea5e9;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --hover-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --gradient-secondary: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
         }
 
         body {
             margin: 0;
-            padding: 10px;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--background-color);
             font-size: 16px;
             color: var(--text-color);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: none;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 2rem;
         }
 
         .video-section {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-section:hover::before {
+            opacity: 1;
+        }
+
+        .video-section:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
         }
 
         .course-info {
-            margin-bottom: 15px;
+            margin-bottom: 2rem;
         }
 
         .course-title {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-            color: var(--primary-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .course-stats {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            color: var(--text-color);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
             flex-wrap: wrap;
         }
 
         .course-stats span {
             background: var(--background-color);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .course-stats span:hover {
+            background: var(--gradient-secondary);
+            color: white;
+            transform: translateY(-2px);
         }
 
         .video-container {
             width: 100%;
-            height: 500px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
             background: #000;
-            border-radius: 12px;
+            border-radius: 1rem;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
         }
 
         .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             border: none;
+            display: none;
+            background: #000;
+        }
+
+        .video-container iframe.active {
+            display: block;
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .video-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            color: white;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .video-container:hover .video-info {
+            transform: translateY(0);
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .video-duration {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            backdrop-filter: blur(4px);
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .play-button:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .video-container:hover .video-controls {
+            opacity: 1;
+        }
+
+        .control-group {
+             display: flex;
+            gap: 15px;
+             align-items: center;
+        }
+
+        .video-control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .video-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .video-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 0.1s linear;
         }
 
         .content-section {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .lesson-list {
-            margin-top: 15px;
-        }
-
-        .unit {
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-top: 2rem;
+            position: relative;
             overflow: hidden;
         }
 
-        .unit-title {
-            font-weight: bold;
-            margin-bottom: 0;
-            cursor: pointer;
-            padding: 15px;
-            background: var(--primary-color);
-            color: white;
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-secondary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .content-section:hover::before {
+            opacity: 1;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            font-weight: 700;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            transition: background-color 0.3s ease;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .content-section h2::before {
+            content: '📚';
+            font-size: 1.2em;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .lesson-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .unit {
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .unit:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .unit-title {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+             display: flex;
+            justify-content: space-between;
+             align-items: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unit-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
         }
 
         .unit-title:hover {
-            background: #357abd;
+            background: var(--primary-dark);
         }
 
         .unit-title::after {
@@ -136,147 +406,979 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-out, padding 0.5s ease;
+            background: var(--background-color);
         }
 
         .unit:not(.collapsed) .lessons {
             max-height: 2000px;
-            padding: 10px;
+            padding: 1.5rem;
         }
 
         .lesson {
-            padding: 12px 15px;
-            margin: 8px 0;
+            padding: 1.25rem;
+            margin: 0.75rem 0;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 1rem;
             transition: all 0.3s ease;
             border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 1rem;
             background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+             height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lesson:hover::before {
+            opacity: 1;
         }
 
         .lesson:hover {
-            background: #f8f9fa;
+            background: var(--background-color);
             transform: translateX(5px);
-        }
-
-        .lesson.active {
-            background: var(--primary-color);
-            color: white;
             border-color: var(--primary-color);
         }
 
-        .lesson-number {
-            background: var(--secondary-color);
+        .lesson.active {
+            background: var(--gradient-primary);
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            min-width: 24px;
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .lesson.active::before {
+            opacity: 1;
+            background: white;
+        }
+
+        .lesson-number {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+            min-width: 2.5rem;
             text-align: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
         }
 
         .lesson.active .lesson-number {
             background: white;
             color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
         }
 
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(74, 144, 226, 0.9);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
+        .lesson-title {
+            flex: 1;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
-        .play-button:hover {
-            background: rgba(74, 144, 226, 1);
-            transform: translate(-50%, -50%) scale(1.05);
+        .lesson:hover .lesson-title {
+            transform: translateX(5px);
         }
 
-        .thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Mobile-specific styles */
         @media (max-width: 767px) {
-            body {
-                padding: 5px;
+            .header {
+                padding: 1.5rem 0;
+                margin-bottom: 1.5rem;
             }
 
             .container {
-                gap: 10px;
+                padding: 0 1rem;
+                gap: 1.5rem;
+            }
+
+            .video-section, .content-section {
+                padding: 1.25rem;
+                border-radius: 1rem;
             }
 
             .course-title {
-                font-size: 1.4rem;
-            }
-
-            .lesson {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-
-            .play-button {
-                padding: 12px 24px;
-                font-size: 1rem;
-            }
-
-            .unit-title {
-                padding: 12px;
-                font-size: 0.9rem;
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
             }
 
             .video-container {
-                height: 300px;
+                border-radius: 0.75rem;
+                margin: 0 -1rem; /* Negative margin to extend full width on mobile */
+                width: calc(100% + 2rem);
+            }
+
+            .play-button {
+                padding: 1rem 2rem;
+            font-size: 1.1rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .unit-title {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+
+            .lesson {
+                padding: 1rem;
+                margin: 0.5rem 0;
+                font-size: 0.95rem;
+            }
+
+            .lesson-number {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+                min-width: 2rem;
             }
         }
 
         /* Touch-friendly styles */
         @media (hover: none) {
             .lesson {
-                padding: 15px;
+                padding: 16px;
                 margin: 8px 0;
             }
 
             .play-button {
-                padding: 15px 30px;
+                padding: 16px 32px;
             }
 
             .unit-title {
-                padding: 15px;
+                padding: 16px;
+            }
+
+            /* Larger touch targets */
+            .category-item,
+            .nav-item,
+            .video-control-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Remove category navigation styles */
+        .category-nav {
+            display: none;
+        }
+
+        .category-container {
+            display: none;
+        }
+
+        .category-list {
+            display: none;
+        }
+
+        .category-item {
+            display: none;
+        }
+
+        /* Quick Actions Styles */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .quick-action:hover::before {
+            opacity: 1;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action[data-action="download"] {
+            --action-color: var(--primary-color);
+        }
+
+        .quick-action[data-action="bookmark"] {
+            --action-color: var(--secondary-color);
+        }
+
+        .quick-action[data-action="share"] {
+            --action-color: var(--accent-color);
+        }
+
+        .quick-action[data-action="notes"] {
+            --action-color: #10b981;
+        }
+
+        .quick-action-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background: var(--action-color);
+            color: white;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action:hover .quick-action-icon {
+            transform: scale(1.1);
+        }
+
+        .quick-action-text {
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .quick-action.active {
+            background: var(--gradient-primary);
+            border-color: var(--primary-color);
+        }
+
+        .quick-action.active .quick-action-text {
+            color: white;
+        }
+
+        .quick-action.active .quick-action-icon {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 767px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .quick-action {
+                padding: 1rem;
+            }
+
+            .quick-action-icon {
+                width: 2rem;
+                height: 2rem;
+                font-size: 1rem;
+            }
+
+            .quick-action-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Progress Section Styles */
+        .progress-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0.8;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .progress-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .progress-stats {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            height: 0.75rem;
+            background: var(--background-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 1rem;
+            width: 0;
+            transition: width 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-details {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .progress-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-details span:first-child::before {
+            content: '📚';
+        }
+
+        .progress-details span:last-child::before {
+            content: '⏱️';
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            padding-left: 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--background-color);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+             cursor: pointer;
+            transition: all 0.3s ease;
+             display: flex;
+             align-items: center;
+            gap: 1rem;
+        }
+
+        .search-result-item:hover {
+            background: var(--background-color);
+        }
+
+        .search-result-item .lesson-number {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+            min-width: 2.5rem;
+            text-align: center;
+        }
+
+        .search-result-item .lesson-title {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .search-result-item .lesson-unit {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Recent Activity Improvements */
+        .recent-activity {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: var(--background-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .activity-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1);
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .activity-note {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .activity-item:hover .activity-note {
+            display: block;
+        }
+
+        .activity-actions {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-item:hover .activity-actions {
+            opacity: 1;
+        }
+
+        .activity-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .activity-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 767px) {
+            .search-bar {
+                padding: 0.75rem;
+            }
+
+            .search-input {
+                padding: 0.875rem 1.25rem;
+                padding-left: 2.5rem;
+                font-size: 0.95rem;
+            }
+
+            .search-icon {
+                font-size: 1.1rem;
+            }
+
+            .search-result-item {
+                padding: 0.875rem;
+            }
+
+            .activity-item {
+                padding: 0.875rem;
+            }
+
+            .activity-icon {
+                width: 2rem;
+                height: 2rem;
+             font-size: 1rem;
+            }
+
+            .activity-title {
+                font-size: 0.95rem;
+            }
+
+            .activity-time {
+            font-size: 0.8rem;
+        }
+
+            .activity-note {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Lecture Timeline Styles - Improved for Mobile */
+        .lecture-timeline {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .timeline-progress {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+            white-space: nowrap;
+        }
+
+        .timeline-bar {
+            height: 1.2rem;
+            background: var(--background-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .timeline-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 1rem;
+            width: 0;
+            transition: width 1s cubic-bezier(.4,2,.6,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-details {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .timeline-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--background-color);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-weight: 500;
+        }
+
+        .resume-last {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .resume-btn {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .resume-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+
+        .resume-btn:active {
+            transform: translateY(0);
+        }
+
+        #last-played-label {
+            flex: 1;
+            min-width: 200px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 767px) {
+            .lecture-timeline {
+                padding: 1.25rem;
+                margin: 1rem;
+                border-radius: 1rem;
+            }
+
+            .timeline-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .timeline-title {
+                font-size: 1.25rem;
+                justify-content: center;
+            }
+
+            .timeline-progress {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+                text-align: center;
+                width: 100%;
+            }
+
+            .timeline-bar {
+                height: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .timeline-details {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.95rem;
+            }
+
+            .timeline-details span {
+                width: 100%;
+                justify-content: center;
+                padding: 0.6rem;
+            }
+
+            .resume-last {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            #last-played-label {
+                text-align: center;
+                font-size: 0.95rem;
+                padding: 0.5rem;
+                background: var(--background-color);
+                border-radius: 0.75rem;
+            }
+
+            .resume-btn {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Touch-friendly styles */
+        @media (hover: none) {
+            .resume-btn {
+                padding: 1rem 1.5rem;
+                min-height: 44px;
+            }
+
+            .timeline-details span {
+                padding: 0.8rem 1rem;
+                min-height: 44px;
+            }
+        }
+
+        /* Add styles for course title */
+        .course-info .course-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 767px) {
+            .course-info .course-title {
+                font-size: 1.75rem;
+                margin-bottom: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div class="header-content">
+            <h1 class="course-title">Premium Course Platform</h1>
+                </div>
+    </div>
+
+    <!-- Search Bar -->
+                <div class="search-bar">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search lessons, topics, or notes...">
+            <div class="search-results"></div>
+                </div>
+                      </div>
+
     <div class="container">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action" data-action="download">
+                <div class="quick-action-icon">📥</div>
+                <span class="quick-action-text">Download</span>
+                 </div>
+            <div class="quick-action" data-action="bookmark">
+                <div class="quick-action-icon">🔖</div>
+                <span class="quick-action-text">Bookmark</span>
+                </div>
+            <div class="quick-action" data-action="share">
+                <div class="quick-action-icon">📤</div>
+                <span class="quick-action-text">Share</span>
+                </div>
+            <div class="quick-action" data-action="notes">
+                <div class="quick-action-icon">📝</div>
+                <span class="quick-action-text">Notes</span>
+                </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <div class="progress-title">Your Progress</div>
+                <div class="progress-stats">0% Complete</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-details">
+                <span>0/58 Lessons</span>
+                <span>30 Hours Left</span>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                <!-- Activity items will be dynamically added here -->
+                                    </div>
+                                    </div>
+
+        <!-- Lecture Timeline -->
+        <div class="lecture-timeline">
+            <div class="timeline-header">
+                <div class="timeline-title">📚 Lecture Progress</div>
+                <div class="timeline-progress">30 Hours Total</div>
+            </div>
+            <div class="timeline-bar">
+                <div class="timeline-fill"></div>
+            </div>
+            <div class="timeline-details">
+                <span>⏱️ 0 Hours Completed</span>
+                <span>📚 30 Hours Remaining</span>
+            </div>
+            <div class="resume-last">
+                <span id="last-played-label">Last Played: None</span>
+                <button class="resume-btn" style="display:none;" id="resume-btn">▶️ Resume</button>
+            </div>
+        </div>
+
         <div class="video-section">
             <div class="course-info">
                 <h1 class="course-title">Developer: Aman Singh</h1>
                 <div class="course-stats">
                     <span>Views: 2.3k</span>
                     <span>Share: 1.3k</span>
-                </div>
-            </div>
+                                    </div>
+                            </div>
             
             <div class="video-container">
-                <img src="https://images.unsplash.com/photo-1581090700227-1e8f4c3d1d4f?auto=format&fit=crop&w=1200&q=80" alt="Video Thumbnail" class="thumbnail">
-                <button class="play-button">Play</button>
-                <iframe style="display: none;" allowfullscreen></iframe>
+                <img src="thumbnail.jpg" alt="Video Thumbnail" class="video-thumbnail">
+                <div class="video-overlay">
+                    <button class="play-button">Play Video</button>
             </div>
-        </div>
+
+                <iframe style="display: none;" allowfullscreen></iframe>
+                                    </div>
+                                    </div>
 
         <div class="content-section">
             <h2>Course Content</h2>
@@ -287,34 +1389,34 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/6NB2A9vBA">
                             <span class="lesson-number">1</span>
-                            TOM u1 2.mp4
-                        </div>
+                            <span class="lesson-title">TOM u1 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/aeHnyfZF9">
                             <span class="lesson-number">2</span>
-                            TOM u1 3.mp4
-                        </div>
+                            <span class="lesson-title">TOM u1 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/LzWzZHuo_">
                             <span class="lesson-number">3</span>
-                            TOM u1 4 part 2.mp4
-                        </div>
+                            <span class="lesson-title">TOM u1 4 part 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/lrzbnhCg9">
                             <span class="lesson-number">4</span>
-                            TOM u1 4.mp4
-                        </div>
+                            <span class="lesson-title">TOM u1 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/cWulBdcNK">
                             <span class="lesson-number">5</span>
-                            TOM u1 5.mp4
-                        </div>
+                            <span class="lesson-title">TOM u1 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/37t24NtFD">
                             <span class="lesson-number">6</span>
-                            TOM u1 7.mp4
+                            <span class="lesson-title">TOM u1 7.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/qfcaCZz5z">
                             <span class="lesson-number">7</span>
-                            TOM u1 8.mp4
+                            <span class="lesson-title">TOM u1 8.mp4</span>
                         </div>
-                    </div>
-                </div>
+                            </div>
+            </div>
 
                 <!-- TOM U2 Section -->
                 <div class="unit collapsed">
@@ -322,34 +1424,34 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/BXN21BHQe">
                             <span class="lesson-number">1</span>
-                            TOM u2 1.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/1nXiRb7LM">
                             <span class="lesson-number">2</span>
-                            TOM u2 2.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/TjL7dLwy6">
                             <span class="lesson-number">3</span>
-                            TOM u2 3.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/SJUDFKl1m">
                             <span class="lesson-number">4</span>
-                            TOM u2 4.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/k-i2Ekp4L">
                             <span class="lesson-number">5</span>
-                            TOM u2 5.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/4_BfWkzLq">
                             <span class="lesson-number">6</span>
-                            TOM u2 6.mp4
-                        </div>
+                            <span class="lesson-title">TOM u2 6.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/LpKd3LtRV">
                             <span class="lesson-number">7</span>
-                            TOM u24.mp4 (U2 L4)
+                            <span class="lesson-title">TOM u24.mp4 (U2 L4)</span>
                         </div>
-                    </div>
-                </div>
+                            </div>
+            </div>
 
                 <!-- TOM U3 Section -->
                 <div class="unit collapsed">
@@ -357,30 +1459,30 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/A70VEkW8c">
                             <span class="lesson-number">1</span>
-                            TOM u3 1.mp4
-                        </div>
+                            <span class="lesson-title">TOM u3 1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/stFe42c7v">
                             <span class="lesson-number">2</span>
-                            TOM u3 2.mp4
-                        </div>
+                            <span class="lesson-title">TOM u3 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/BHDBMzdc8">
                             <span class="lesson-number">3</span>
-                            TOM u3 3.mp4
-                        </div>
+                            <span class="lesson-title">TOM u3 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/8I7SCde59">
                             <span class="lesson-number">4</span>
-                            TOM u3 4.mp4
-                        </div>
+                            <span class="lesson-title">TOM u3 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/Zm9HVpsG2">
                             <span class="lesson-number">5</span>
-                            TOM u3 5.mp4
-                        </div>
+                            <span class="lesson-title">TOM u3 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/x19SMil8X">
                             <span class="lesson-number">6</span>
-                            TOM u3 6.mp4
-                        </div>
-                    </div>
-                </div>
+                            <span class="lesson-title">TOM u3 6.mp4</span>
+                                    </div>
+                                    </div>
+                            </div>
 
                 <!-- TOM U4 Section -->
                 <div class="unit collapsed">
@@ -388,34 +1490,34 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/XaDNHynIf">
                             <span class="lesson-number">1</span>
-                            TOM U4 1.mp4
+                            <span class="lesson-title">TOM U4 1.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/jLEukvjWl">
                             <span class="lesson-number">2</span>
-                            TOM U4 1 balancing.mp4
+                            <span class="lesson-title">TOM U4 1 balancing.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/YTUL1xsHg">
                             <span class="lesson-number">3</span>
-                            TOM U4 2.mp4
+                            <span class="lesson-title">TOM U4 2.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/JbzhRBSnR">
                             <span class="lesson-number">4</span>
-                            TOM U4 2 balancing.mp4
+                            <span class="lesson-title">TOM U4 2 balancing.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/_1A7FzsKG">
                             <span class="lesson-number">5</span>
-                            TOM U4 3.mp4
+                            <span class="lesson-title">TOM U4 3.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/jNrYRW-NQ">
                             <span class="lesson-number">6</span>
-                            TOM U4 3 balancing.mp4
+                            <span class="lesson-title">TOM U4 3 balancing.mp4</span>
                         </div>
                         <div class="lesson" data-video-url="https://short.icu/-_Brkic94">
                             <span class="lesson-number">7</span>
-                            TOM U4 4.mp4
+                            <span class="lesson-title">TOM U4 4.mp4</span>
                         </div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
                 <!-- RAC U1 Section -->
                 <div class="unit collapsed">
@@ -423,46 +1525,46 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/xb0nolvoC">
                             <span class="lesson-number">1</span>
-                            RAC u1 1.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/uZFaGr4o5">
                             <span class="lesson-number">2</span>
-                            RAC U1 2.mp4
-                        </div>
+                            <span class="lesson-title">RAC U1 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/JZ_ZK1nUB">
                             <span class="lesson-number">3</span>
-                            RAC u1 3.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/eNpHx8X-X">
                             <span class="lesson-number">4</span>
-                            RAC u1 4.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/8TmpKglUC">
                             <span class="lesson-number">5</span>
-                            RAC u1 5.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/iFVb7v4kk">
                             <span class="lesson-number">6</span>
-                            RAC u1 6.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 6.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/4QYud21Hp">
                             <span class="lesson-number">7</span>
-                            RAC u1 7.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 7.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/mAl1lcRby">
                             <span class="lesson-number">8</span>
-                            RAC u1 8.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 8.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/X2YfXhaMS">
                             <span class="lesson-number">9</span>
-                            RAC u1 9.mp4
-                        </div>
+                            <span class="lesson-title">RAC u1 9.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/Qf9HoVnbt">
                             <span class="lesson-number">10</span>
-                            RAC u1 10.mp4
-                        </div>
-                    </div>
-                </div>
+                            <span class="lesson-title">RAC u1 10.mp4</span>
+                                    </div>
+                            </div>
+            </div>
 
                 <!-- RAC U2 Section -->
                 <div class="unit collapsed">
@@ -470,46 +1572,46 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/ls1kTyO_3">
                             <span class="lesson-number">1</span>
-                            RAC u2 1.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/TmsuImMTY">
                             <span class="lesson-number">2</span>
-                            RAC u2 2.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/EKoH4Ufvx">
                             <span class="lesson-number">3</span>
-                            RAC u2 3.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/bmDuUXA-0">
                             <span class="lesson-number">4</span>
-                            RAC u2 3_1.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 3_1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/SJUDFKl1m">
                             <span class="lesson-number">5</span>
-                            RAC u2 4.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/1E0ZYBYRT">
                             <span class="lesson-number">6</span>
-                            RAC u2 5.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/qKRHzoAGB">
                             <span class="lesson-number">7</span>
-                            RAC u2 5_1.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 5_1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/c_70RicGW">
                             <span class="lesson-number">8</span>
-                            RAC u2 6.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 6.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/4uMOl8Rpa">
                             <span class="lesson-number">9</span>
-                            RAC u2 7.mp4
-                        </div>
+                            <span class="lesson-title">RAC u2 7.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/Lmy5Xhu4Ez">
                             <span class="lesson-number">10</span>
-                            RAC u2 8.mp4
-                        </div>
-                    </div>
-                </div>
+                            <span class="lesson-title">RAC u2 8.mp4</span>
+                                    </div>
+                            </div>
+            </div>
 
                 <!-- RAC U3 Section -->
                 <div class="unit collapsed">
@@ -517,26 +1619,26 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/9akwFwx2i">
                             <span class="lesson-number">1</span>
-                            RAC U3 2.mp4
-                        </div>
+                            <span class="lesson-title">RAC U3 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/19a0qeCdl">
                             <span class="lesson-number">2</span>
-                            RAC U3 3.mp4
-                        </div>
+                            <span class="lesson-title">RAC U3 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/qbTGMcC1X">
                             <span class="lesson-number">3</span>
-                            RAC U3 4.mp4
-                        </div>
+                            <span class="lesson-title">RAC U3 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/LLzSG1S1L">
                             <span class="lesson-number">4</span>
-                            RAC U3 5.mp4
-                        </div>
+                            <span class="lesson-title">RAC U3 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/rJ09kTnAW">
                             <span class="lesson-number">5</span>
-                            RAC U3 6.mp4
-                        </div>
-                    </div>
-                </div>
+                            <span class="lesson-title">RAC U3 6.mp4</span>
+                                    </div>
+                            </div>
+            </div>
 
                 <!-- RAC U4 Section -->
                 <div class="unit collapsed">
@@ -544,115 +1646,266 @@
                     <div class="lessons">
                         <div class="lesson" data-video-url="https://short.icu/EhoYb1MUS">
                             <span class="lesson-number">1</span>
-                            RAC U4 1.mp4
-                        </div>
+                            <span class="lesson-title">RAC U4 1.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/jQH7AdxZE">
                             <span class="lesson-number">2</span>
-                            RAC U4 2.mp4
-                        </div>
+                            <span class="lesson-title">RAC U4 2.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/8Wxt8Q871">
                             <span class="lesson-number">3</span>
-                            RAC U4 3.mp4
-                        </div>
+                            <span class="lesson-title">RAC U4 3.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/AGF875dfK">
                             <span class="lesson-number">4</span>
-                            RAC U4 4.mp4
-                        </div>
+                            <span class="lesson-title">RAC U4 4.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/42y3OynMD">
                             <span class="lesson-number">5</span>
-                            RAC U4 5.mp4
-                        </div>
+                            <span class="lesson-title">RAC U4 5.mp4</span>
+                                    </div>
                         <div class="lesson" data-video-url="https://short.icu/ouOytWfeK">
                             <span class="lesson-number">6</span>
-                            RAC U4 6.mp4
+                            <span class="lesson-title">RAC U4 6.mp4</span>
+                                    </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
     </div>
 
     <script>
-        // Video playback functionality
-        const videoContainer = document.querySelector('.video-container');
-        const thumbnail = document.querySelector('.thumbnail');
-        const playButton = document.querySelector('.play-button');
-        const iframe = document.querySelector('iframe');
-        const courseTitle = document.querySelector('.course-title');
-        const courseStats = document.querySelector('.course-stats');
+        // Storage management
+        const STORAGE_KEYS = {
+            WATCH_HISTORY: 'watchHistory',
+            BOOKMARKS: 'bookmarks',
+            NOTES: 'notes',
+            PROGRESS: 'progress',
+            LECTURE_DATA: 'lectureData',
+            LAST_PLAYED: 'lastPlayed'
+        };
 
-        function playVideo(url, title) {
-            thumbnail.style.display = 'none';
-            playButton.style.display = 'none';
-            iframe.src = url;
-            iframe.style.display = 'block';
+        // Initialize storage
+        function initializeStorage() {
+            const defaults = {
+                [STORAGE_KEYS.WATCH_HISTORY]: [],
+                [STORAGE_KEYS.BOOKMARKS]: [],
+                [STORAGE_KEYS.NOTES]: {},
+                [STORAGE_KEYS.PROGRESS]: { completed: 0, total: 58 },
+                [STORAGE_KEYS.LECTURE_DATA]: { completed: 0, total: 30, lessons: 58 },
+                [STORAGE_KEYS.LAST_PLAYED]: null
+            };
+
+            Object.entries(defaults).forEach(([key, value]) => {
+                if (!localStorage.getItem(key)) {
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            });
+        }
+
+        // Update functions
+        function updateWatchHistory(url, title) {
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCH_HISTORY)) || [];
+            history.unshift({ url, title, timestamp: Date.now() });
+            if (history.length > 10) history.pop();
+            localStorage.setItem(STORAGE_KEYS.WATCH_HISTORY, JSON.stringify(history));
+            updateRecentActivity();
+        }
+
+        function updateProgress(url) {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS)) || { completed: 0, total: 58 };
+            const lectureData = JSON.parse(localStorage.getItem(STORAGE_KEYS.LECTURE_DATA)) || { completed: 0, total: 30 };
             
-            if (title) {
+            progress.completed = Math.min(progress.total, progress.completed + 1);
+            lectureData.completed = Math.min(lectureData.total, lectureData.completed + 0.5);
+            
+            localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(progress));
+            localStorage.setItem(STORAGE_KEYS.LECTURE_DATA, JSON.stringify(lectureData));
+            
+            updateProgressUI();
+            updateTimelineUI();
+        }
+
+        // UI Update functions
+        function updateProgressUI() {
+            const progress = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROGRESS)) || { completed: 0, total: 58 };
+            const percent = (progress.completed / progress.total) * 100;
+            
+            document.querySelector('.progress-fill').style.width = `${percent}%`;
+            document.querySelector('.progress-stats').textContent = `${Math.round(percent)}% Complete`;
+            document.querySelector('.progress-details').innerHTML = `
+                <span>${progress.completed}/${progress.total} Lessons</span>
+                <span>${Math.round(30 - (progress.completed * 0.5))} Hours Left</span>
+            `;
+        }
+
+        function updateTimelineUI() {
+            const lectureData = JSON.parse(localStorage.getItem(STORAGE_KEYS.LECTURE_DATA)) || { completed: 0, total: 30 };
+            const percent = (lectureData.completed / lectureData.total) * 100;
+            
+            document.querySelector('.timeline-fill').style.width = `${percent}%`;
+            document.querySelector('.timeline-progress').textContent = `${lectureData.total} Hours Total`;
+            document.querySelector('.timeline-details').innerHTML = `
+                <span>⏱️ ${Math.round(lectureData.completed)} Hours Completed</span>
+                <span>📚 ${Math.round(lectureData.total - lectureData.completed)} Hours Remaining</span>
+            `;
+        }
+
+        function updateRecentActivity() {
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.WATCH_HISTORY)) || [];
+            const activityList = document.querySelector('.activity-list');
+            
+            activityList.innerHTML = history.slice(0, 5).map(item => `
+                <div class="activity-item" data-video-url="${item.url}">
+                    <div class="activity-icon">📺</div>
+                    <div class="activity-details">
+                        <div class="activity-title">Watched ${item.title}</div>
+                        <div class="activity-time">${formatTimestamp(item.timestamp)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced playVideo function
+        function playVideo(url, title) {
+            const iframe = document.querySelector('.video-container iframe');
+            const videoThumbnail = document.querySelector('.video-thumbnail');
+            const videoOverlay = document.querySelector('.video-overlay');
+            
+            if (videoThumbnail) videoThumbnail.style.display = 'none';
+            if (videoOverlay) videoOverlay.style.display = 'none';
+            
+            if (iframe) {
+                iframe.src = url;
+                iframe.style.display = 'block';
+                iframe.classList.add('active');
+            }
+            
+            // Update course title
+            const courseTitle = document.querySelector('.course-info .course-title');
+            if (courseTitle) {
                 courseTitle.textContent = title;
             }
             
-            // Update stats
-            const randomViews = (Math.random() * 5 + 1).toFixed(1);
-            const randomShares = (Math.random() * 3 + 0.5).toFixed(1);
-            courseStats.innerHTML = `<span>Views: ${randomViews}k</span><span>Share: ${randomShares}k</span>`;
+            // Update localStorage
+            updateWatchHistory(url, title);
+            updateProgress(url);
+            
+            // Save last played
+            localStorage.setItem(STORAGE_KEYS.LAST_PLAYED, JSON.stringify({ url, title, timestamp: Date.now() }));
+            
+            // Update all UIs
+            updateProgressUI();
+            updateTimelineUI();
+            updateRecentActivity();
         }
 
-        // Add click handlers to lessons
-        document.querySelectorAll('.lesson').forEach(lesson => {
-            lesson.addEventListener('click', function() {
-                // Remove active class from all lessons
-                document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
-                // Add active class to clicked lesson
-                this.classList.add('active');
-                
-                const videoUrl = this.getAttribute('data-video-url');
-                const videoTitle = this.textContent;
-                if (videoUrl) {
-                    playVideo(videoUrl, videoTitle);
-                    // Scroll video into view on mobile
-                    if (window.innerWidth < 768) {
-                        videoContainer.scrollIntoView({ behavior: 'smooth' });
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            updateProgressUI();
+            updateTimelineUI();
+            updateRecentActivity();
+
+            // Add click handlers for lessons
+            document.querySelectorAll('.lesson').forEach(lesson => {
+                lesson.addEventListener('click', function() {
+                    const url = this.getAttribute('data-video-url');
+                    const title = this.querySelector('.lesson-title').textContent;
+                    
+                    // Remove active class from all lessons
+                    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+                    // Add active class to clicked lesson
+                    this.classList.add('active');
+                    
+                    playVideo(url, title);
+                });
+            });
+
+            // Add click handlers for unit titles
+            document.querySelectorAll('.unit-title').forEach(title => {
+                title.addEventListener('click', function() {
+                    const unit = this.parentElement;
+                    unit.classList.toggle('collapsed');
+                });
+            });
+
+            // Add click handler for play button
+            const playButton = document.querySelector('.play-button');
+            if (playButton) {
+                playButton.addEventListener('click', function() {
+                    const activeLesson = document.querySelector('.lesson.active');
+                    if (activeLesson) {
+                        const url = activeLesson.getAttribute('data-video-url');
+                        const title = activeLesson.querySelector('.lesson-title').textContent;
+                        playVideo(url, title);
                     }
+                });
+            }
+
+            // Add click handlers for activity items
+            document.querySelector('.activity-list').addEventListener('click', function(e) {
+                const activityItem = e.target.closest('.activity-item');
+                if (activityItem) {
+                    const url = activityItem.getAttribute('data-video-url');
+                    const title = activityItem.querySelector('.activity-title').textContent.replace('Watched ', '');
+                    playVideo(url, title);
                 }
             });
-        });
 
-        // Play button click handler
-        playButton.addEventListener('click', function() {
-            const firstLesson = document.querySelector('.lesson');
-            if (firstLesson) {
-                firstLesson.classList.add('active');
-                const videoUrl = firstLesson.getAttribute('data-video-url');
-                const videoTitle = firstLesson.textContent;
-                if (videoUrl) {
-                    playVideo(videoUrl, videoTitle);
-                }
+            // Add click handler for resume button
+            const resumeBtn = document.getElementById('resume-btn');
+            if (resumeBtn) {
+                resumeBtn.addEventListener('click', function() {
+                    const lastPlayed = JSON.parse(localStorage.getItem(STORAGE_KEYS.LAST_PLAYED));
+                    if (lastPlayed) {
+                        playVideo(lastPlayed.url, lastPlayed.title);
+                    }
+                });
+            }
+
+            // Check for last played video
+            const lastPlayed = JSON.parse(localStorage.getItem(STORAGE_KEYS.LAST_PLAYED));
+            if (lastPlayed) {
+                const resumeBtn = document.getElementById('resume-btn');
+                const lastPlayedLabel = document.getElementById('last-played-label');
+                if (resumeBtn) resumeBtn.style.display = 'inline-block';
+                if (lastPlayedLabel) lastPlayedLabel.textContent = `Last Played: ${lastPlayed.title}`;
             }
         });
 
-        // Unit title click handlers with smooth animation
-        document.querySelectorAll('.unit-title').forEach(title => {
-            title.addEventListener('click', function() {
-                const unit = this.parentElement;
-                
-                // Close all other units
-                document.querySelectorAll('.unit').forEach(otherUnit => {
-                    if (otherUnit !== unit) {
-                        otherUnit.classList.add('collapsed');
-                    }
-                });
-                
-                // Toggle current unit
-                unit.classList.toggle('collapsed');
-            });
-        });
+        // Helper function to format timestamps
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Less than 24 hours
+            if (diff < 24 * 60 * 60 * 1000) {
+                const hours = Math.floor(diff / (60 * 60 * 1000));
+                if (hours === 0) {
+                    const minutes = Math.floor(diff / (60 * 1000));
+                    return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+                }
+                return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+            }
+            
+            // Less than 7 days
+            if (diff < 7 * 24 * 60 * 60 * 1000) {
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                return `${days} day${days !== 1 ? 's' : ''} ago`;
+            }
+            
+            // Otherwise show date
+            return date.toLocaleDateString();
+        }
 
-        // Initialize all units as collapsed
-        document.querySelectorAll('.unit').forEach(unit => {
-            unit.classList.add('collapsed');
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEYS.PROGRESS) updateProgressUI();
+            if (e.key === STORAGE_KEYS.LECTURE_DATA) updateTimelineUI();
+            if (e.key === STORAGE_KEYS.WATCH_HISTORY) updateRecentActivity();
         });
     </script>
 </body>
 </html>
-
-
